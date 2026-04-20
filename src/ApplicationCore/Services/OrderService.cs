@@ -15,7 +15,7 @@ public class OrderService : IOrderService
     private readonly IUriComposer _uriComposer;
     private readonly IRepository<Basket> _basketRepository;
     private readonly IRepository<CatalogItem> _itemRepository;
-
+    //comment just for git practice
     public OrderService(IRepository<Basket> basketRepository,
         IRepository<CatalogItem> itemRepository,
         IRepository<Order> orderRepository,
@@ -26,7 +26,7 @@ public class OrderService : IOrderService
         _basketRepository = basketRepository;
         _itemRepository = itemRepository;
     }
-
+    //fkjznfjz,dfmzbmfbzmbsfmMSfz,mn,zv
     public async Task CreateOrderAsync(int basketId, Address shippingAddress)
     {
         var basketSpec = new BasketWithItemsSpecification(basketId);
