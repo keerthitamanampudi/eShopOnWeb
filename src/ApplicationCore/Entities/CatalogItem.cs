@@ -3,6 +3,7 @@ using Ardalis.GuardClauses;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Entities;
+//comment added from Origin/main
 //comment added from KeerthiBranch
 public class CatalogItem : BaseEntity, IAggregateRoot
 {
