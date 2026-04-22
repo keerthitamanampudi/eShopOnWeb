@@ -4,6 +4,7 @@ using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Entities;
 //comment added from Origin/main
+//comment added from KeerthiBranch
 public class CatalogItem : BaseEntity, IAggregateRoot
 {
     public string Name { get; private set; }
@@ -15,12 +16,16 @@ public class CatalogItem : BaseEntity, IAggregateRoot
     public int CatalogBrandId { get; private set; }
     public CatalogBrand? CatalogBrand { get; private set; }
 
+    // Inventory / stock
+    public int AvailableStock { get; private set; }
+
     public CatalogItem(int catalogTypeId,
         int catalogBrandId,
         string description,
         string name,
         decimal price,
-        string pictureUri)
+        string pictureUri,
+        int availableStock = 0)
     {
         CatalogTypeId = catalogTypeId;
         CatalogBrandId = catalogBrandId;
@@ -28,6 +33,7 @@ public class CatalogItem : BaseEntity, IAggregateRoot
         Name = name;
         Price = price;
         PictureUri = pictureUri;
+        AvailableStock = availableStock;
     }
 
     public void UpdateDetails(CatalogItemDetails details)
@@ -61,6 +67,26 @@ public class CatalogItem : BaseEntity, IAggregateRoot
             return;
         }
         PictureUri = $"images\\products\\{pictureName}?{new DateTime().Ticks}";
+    }
+
+    // Inventory helpers
+    public void SetStock(int stock)
+    {
+        Guard.Against.Negative(stock, nameof(stock));
+        AvailableStock = stock;
+    }
+
+    public void DecreaseStock(int qty)
+    {
+        Guard.Against.NegativeOrZero(qty, nameof(qty));
+        if (qty > AvailableStock) throw new InvalidOperationException("Not enough stock.");
+        AvailableStock -= qty;
+    }
+
+    public void IncreaseStock(int qty)
+    {
+        Guard.Against.NegativeOrZero(qty, nameof(qty));
+        AvailableStock += qty;
     }
 
     public readonly record struct CatalogItemDetails
