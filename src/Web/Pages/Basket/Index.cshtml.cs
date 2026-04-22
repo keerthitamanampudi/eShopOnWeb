@@ -43,6 +43,13 @@ public class IndexModel : PageModel
             return RedirectToPage("/Index");
         }
 
+        // Server-side protection: do not allow adding if out of stock
+        if (item.AvailableStock <= 0)
+        {
+            // Optionally set TempData or ModelState to inform user; for now simply do not add.
+            return RedirectToPage();
+        }
+
         var username = GetOrSetBasketCookieAndUserName();
         var basket = await _basketService.AddItemToBasket(username,
             productDetails.Id, item.Price);

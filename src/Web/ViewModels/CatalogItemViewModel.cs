@@ -6,4 +6,7 @@ public class CatalogItemViewModel
     public string? Name { get; set; }
     public string? PictureUri { get; set; }
     public decimal Price { get; set; }
+
+    // new: expose stock to UI
+    public int AvailableStock { get; set; }
 }
