@@ -66,7 +66,9 @@ public class BasketViewModelService : IBasketViewModelService
                 Quantity = basketItem.Quantity,
                 CatalogItemId = basketItem.CatalogItemId,
                 PictureUrl = _uriComposer.ComposePicUri(catalogItem.PictureUri),
-                ProductName = catalogItem.Name
+                ProductName = catalogItem.Name,
+                // expose available stock to the UI so the basket page can enforce limits
+                AvailableStock = catalogItem.AvailableStock
             };
             return basketItemViewModel;
         }).ToList();

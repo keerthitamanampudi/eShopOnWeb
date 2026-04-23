@@ -46,11 +46,30 @@ public class IndexModel : PageModel
         // Server-side protection: do not allow adding if out of stock
         if (item.AvailableStock <= 0)
         {
-            // Optionally set TempData or ModelState to inform user; for now simply do not add.
+            TempData["StockMessage"] = "Item is out of stock.";
             return RedirectToPage();
         }
 
         var username = GetOrSetBasketCookieAndUserName();
+
+        // check existing quantity in basket to avoid exceeding available stock
+        var basketView = await _basketViewModelService.GetOrCreateBasketForUser(username);
+        var existing = basketView.Items.FirstOrDefault(x => x.CatalogItemId == productDetails.Id);
+        var existingQty = existing?.Quantity ?? 0;
+
+        if (existingQty >= item.AvailableStock)
+        {
+            TempData["StockMessage"] = "Cannot add more than available stock.";
+            return RedirectToPage();
+        }
+
+        // If adding one would exceed stock, do not add and inform user
+        if (existingQty + 1 > item.AvailableStock)
+        {
+            TempData["StockMessage"] = $"Only {item.AvailableStock - existingQty} items left.";
+            return RedirectToPage();
+        }
+
         var basket = await _basketService.AddItemToBasket(username,
             productDetails.Id, item.Price);
 
@@ -66,8 +85,39 @@ public class IndexModel : PageModel
             return;
         }
 
-        var basketView = await _basketViewModelService.GetOrCreateBasketForUser(GetOrSetBasketCookieAndUserName());
-        var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
+        var username = GetOrSetBasketCookieAndUserName();
+        var basketView = await _basketViewModelService.GetOrCreateBasketForUser(username);
+
+        // Map incoming basket item IDs to catalog item IDs
+        var basketItemMap = basketView.Items.ToDictionary(b => b.Id, b => b.CatalogItemId);
+
+        var updateModel = new Dictionary<string, int>();
+
+        foreach (var incoming in items)
+        {
+            // incoming.Id is basket item id
+            if (!basketItemMap.TryGetValue(incoming.Id, out var catalogId))
+            {
+                continue;
+            }
+
+            var catalogItem = await _itemRepository.GetByIdAsync(catalogId);
+            var available = catalogItem?.AvailableStock ?? 0;
+            var desiredQty = incoming.Quantity;
+
+            // clamp to available stock
+            if (desiredQty > available)
+            {
+                desiredQty = available;
+            }
+            if (desiredQty < 0)
+            {
+                desiredQty = 0;
+            }
+
+            updateModel[incoming.Id.ToString()] = desiredQty;
+        }
+
         var basket = await _basketService.SetQuantities(basketView.Id, updateModel);
         BasketModel = await _basketViewModelService.Map(basket);
     }

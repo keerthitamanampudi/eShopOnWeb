@@ -36,7 +36,30 @@
                             <section class="esh-basket-item esh-basket-item--middle col-xs-2">$ @item.UnitPrice.ToString("N2")</section>
                             <section class="esh-basket-item esh-basket-item--middle col-xs-2">
                                 <input type="hidden" name="@("Items[" + i + "].Id")" value="@item.Id" />
-                                <input type="number" class="esh-basket-input" min="0" name="@("Items[" + i + "].Quantity")" value="@item.Quantity" />
+
+                                <div class="esh-quantity-control" data-available="@item.AvailableStock">
+                                    <button type="button" class="btn esh-qty-btn" onclick="decreaseQty(@i)" id="dec-@i">-</button>
+                                    <input type="number" class="esh-basket-input" min="0" name="@("Items[" + i + "].Quantity")" value="@item.Quantity" id="qty-@i" />
+                                    <button type="button" class="btn esh-qty-btn" onclick="increaseQty(@i)" id="inc-@i" @(item.Quantity >= item.AvailableStock ? "disabled" : "")>+</button>
+                                </div>
+
+                                <div class="esh-catalog-stock">
+                                    @{
+                                        var remaining = item.AvailableStock - item.Quantity;
+                                        if (item.AvailableStock == 0)
+                                        {
+                                            <span class="text-danger">Out of stock</span>;
+                                        }
+                                        else if (remaining <= 0)
+                                        {
+                                            <span>Only 0 left</span>;
+                                        }
+                                        else
+                                        {
+                                            <span>Only @remaining left</span>;
+                                        }
+                                    }
+                                </div>
                             </section>
                             <section class="esh-basket-item esh-basket-item--middle esh-basket-item--mark col-xs-2">$ @Math.Round(item.Quantity * item.UnitPrice, 2).ToString("N2")</section>
                         </div>
@@ -88,3 +111,97 @@
         </section>
     }
 </div>
+
+@section Scripts {
+    <script>
+        function increaseQty(index) {
+            var qtyEl = document.getElementById('qty-' + index);
+            var incEl = document.getElementById('inc-' + index);
+            var decEl = document.getElementById('dec-' + index);
+            var container = incEl.closest('.esh-quantity-control');
+            var available = parseInt(container.getAttribute('data-available') || '0', 10);
+            var current = parseInt(qtyEl.value || '0', 10);
+
+            if (current < available) {
+                current++;
+                qtyEl.value = current;
+            }
+
+            if (current >= available) {
+                incEl.setAttribute('disabled', 'disabled');
+            } else {
+                incEl.removeAttribute('disabled');
+            }
+
+            if (current > 0) {
+                decEl.removeAttribute('disabled');
+            }
+        }
+
+        function decreaseQty(index) {
+            var qtyEl = document.getElementById('qty-' + index);
+            var incEl = document.getElementById('inc-' + index);
+            var decEl = document.getElementById('dec-' + index);
+            var container = incEl.closest('.esh-quantity-control');
+            var available = parseInt(container.getAttribute('data-available') || '0', 10);
+            var current = parseInt(qtyEl.value || '0', 10);
+
+            if (current > 0) {
+                current--;
+                qtyEl.value = current;
+            }
+
+            if (current < available) {
+                incEl.removeAttribute('disabled');
+            }
+
+            if (current <= 0) {
+                decEl.setAttribute('disabled', 'disabled');
+            } else {
+                decEl.removeAttribute('disabled');
+            }
+        }
+
+        // ensure inputs are clamped on manual change
+        document.addEventListener('DOMContentLoaded', function () {
+            var inputs = document.querySelectorAll('.esh-quantity-control');
+            inputs.forEach(function (container, index) {
+                var qtyEl = container.querySelector('input[type="number"]');
+                var incEl = container.querySelector('#inc-' + index);
+                var decEl = container.querySelector('#dec-' + index);
+                var available = parseInt(container.getAttribute('data-available') || '0', 10);
+
+                // set initial state
+                var current = parseInt(qtyEl.value || '0', 10);
+                if (current >= available) {
+                    var inc = container.querySelector('button[id^="inc-"]');
+                    if (inc) inc.setAttribute('disabled', 'disabled');
+                }
+                if (current <= 0) {
+                    var dec = container.querySelector('button[id^="dec-"]');
+                    if (dec) dec.setAttribute('disabled', 'disabled');
+                }
+
+                qtyEl.addEventListener('change', function () {
+                    var v = parseInt(qtyEl.value || '0', 10);
+                    if (v < 0) v = 0;
+                    if (v > available) v = available;
+                    qtyEl.value = v;
+
+                    var incBtn = container.querySelector('button[id^="inc-"]');
+                    var decBtn = container.querySelector('button[id^="dec-"]');
+                    if (v >= available) {
+                        if (incBtn) incBtn.setAttribute('disabled', 'disabled');
+                    } else {
+                        if (incBtn) incBtn.removeAttribute('disabled');
+                    }
+                    if (v <= 0) {
+                        if (decBtn) decBtn.setAttribute('disabled', 'disabled');
+                    } else {
+                        if (decBtn) decBtn.removeAttribute('disabled');
+                    }
+                });
+            });
+        });
+    </script>
+}
