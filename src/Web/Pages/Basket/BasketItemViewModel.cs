@@ -12,6 +12,8 @@ public class BasketItemViewModel
 
     [Range(0, int.MaxValue, ErrorMessage = "Quantity must be bigger than 0")]
     public int Quantity { get; set; }
-  
+
+    // UI-only: expose picture and available stock to the basket page
     public string? PictureUrl { get; set; }
+    public int AvailableStock { get; set; }
 }
