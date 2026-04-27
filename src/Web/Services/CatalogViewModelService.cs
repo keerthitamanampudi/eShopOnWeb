@@ -37,7 +37,8 @@ public class CatalogViewModelService : ICatalogViewModelService
         _uriComposer = uriComposer;
     }
 
-    public async Task<CatalogIndexViewModel> GetCatalogItems(int pageIndex, int itemsPage, int? brandId, int? typeId)
+    public async Task<CatalogIndexViewModel> GetCatalogItems(int pageIndex, int itemsPage, int? brandId, int? typeId, string? search = null)
+
     {
         _logger.LogInformation("GetCatalogItems called.");
 
@@ -47,6 +48,12 @@ public class CatalogViewModelService : ICatalogViewModelService
 
         // the implementation below using ForEach and Count. We need a List.
         var itemsOnPage = await _itemRepository.ListAsync(filterPaginatedSpecification);
+        if (!string.IsNullOrEmpty(search))
+        {
+            itemsOnPage = itemsOnPage
+                .Where(x => x.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
         var totalItems = await _itemRepository.CountAsync(filterSpecification);
 
         var vm = new CatalogIndexViewModel()
@@ -68,7 +75,10 @@ public class CatalogViewModelService : ICatalogViewModelService
                 ActualPage = pageIndex,
                 ItemsPerPage = itemsOnPage.Count,
                 TotalItems = totalItems,
-                TotalPages = int.Parse(Math.Ceiling(((decimal)totalItems / itemsPage)).ToString())
+                // guard against division by zero
+                TotalPages = itemsPage > 0
+                    ? (int)Math.Ceiling(((decimal)totalItems / itemsPage))
+                    : (totalItems > 0 ? 1 : 0)
             }
         };
 

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using BlazorShared.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.eShopWeb.Web.Services;
 using Microsoft.eShopWeb.Web.ViewModels;
-
-namespace Microsoft.eShopWeb.Web.Pages;
 
 public class IndexModel : PageModel
 {
@@ -15,8 +15,18 @@ public class IndexModel : PageModel
 
     public required CatalogIndexViewModel CatalogModel { get; set; } = new CatalogIndexViewModel();
 
+    // 🔥 ADD THIS
+    [BindProperty(SupportsGet = true)]
+    public string? SearchString { get; set; }
+
     public async Task OnGet(CatalogIndexViewModel catalogModel, int? pageId)
     {
-        CatalogModel = await _catalogViewModelService.GetCatalogItems(pageId ?? 0, Constants.ITEMS_PER_PAGE, catalogModel.BrandFilterApplied, catalogModel.TypesFilterApplied);
+        CatalogModel = await _catalogViewModelService.GetCatalogItems(
+            pageId ?? 0,
+            Constants.ITEMS_PER_PAGE,
+            catalogModel.BrandFilterApplied,
+            catalogModel.TypesFilterApplied,
+            SearchString   // 👈 PASS HERE
+        );
     }
 }
