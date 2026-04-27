@@ -45,8 +45,17 @@ public class CatalogViewModelService : ICatalogViewModelService
         var filterPaginatedSpecification =
             new CatalogFilterPaginatedSpecification(itemsPage * pageIndex, itemsPage, brandId, typeId);
 
+        //CHANGE 1: Convert to List (needed for filtering)
+        var itemsOnPage = (await _itemRepository.ListAsync(filterPaginatedSpecification)).ToList();
+
+        // CHANGE 2: ADD PRICE FILTER
+        decimal minPrice = 1000;
+
+        itemsOnPage = itemsOnPage
+            .Where(x => x.Price >= minPrice)
+            .ToList();
+
         // the implementation below using ForEach and Count. We need a List.
-        var itemsOnPage = await _itemRepository.ListAsync(filterPaginatedSpecification);
         var totalItems = await _itemRepository.CountAsync(filterSpecification);
 
         var vm = new CatalogIndexViewModel()
