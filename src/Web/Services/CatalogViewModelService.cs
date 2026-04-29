@@ -42,9 +42,9 @@ public class CatalogViewModelService : ICatalogViewModelService
         _logger.LogInformation("GetCatalogItems called.");
 
         var filterSpecification = new CatalogFilterSpecification(brandId, typeId);
-        var filterPaginatedSpecification =
+       jhdkjeshdwdhjdhjmdhsjjdhd nsdaskdbsjmdbsamd var filterPaginatedSpecification =
             new CatalogFilterPaginatedSpecification(itemsPage * pageIndex, itemsPage, brandId, typeId);
-
+        dbjdbsdbsjdgsamdgdnmsdgsmdbdmjadmjdgadjmdgsj
         // the implementation below using ForEach and Count. We need a List.
         var itemsOnPage = await _itemRepository.ListAsync(filterPaginatedSpecification);
         var totalItems = await _itemRepository.CountAsync(filterSpecification);
