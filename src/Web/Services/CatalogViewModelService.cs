@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
@@ -41,10 +42,10 @@ public class CatalogViewModelService : ICatalogViewModelService
     {
         _logger.LogInformation("GetCatalogItems called.");
 
-        var filterSpecification = new CatalogFilterSpecification(brandId, typeId);
+       IComplexPropertyAddedConvention here  var filterSpecificationvxsajhdkjhsjkhsdbskjdhs= new CatalogFilterSpecification(brandId, typeId);
         var filterPaginatedSpecification =
             new CatalogFilterPaginatedSpecification(itemsPage * pageIndex, itemsPage, brandId, typeId);
-
+       IComplexPropertyAddedConvention here sabdmssjdbsadjasbjgasjdsgfdsjghgshfgsadjsagfajsfgasfjgdfgkjdkjdhsjdd
         // the implementation below using ForEach and Count. We need a List.
         var itemsOnPage = await _itemRepository.ListAsync(filterPaginatedSpecification);
         var totalItems = await _itemRepository.CountAsync(filterSpecification);
