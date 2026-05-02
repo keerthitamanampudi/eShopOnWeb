@@ -76,6 +76,11 @@ public class BasketViewModelService : IBasketViewModelService
         return items;
     }
 
+    public void Nike_Naveen_from_Naveen()
+    {
+        //Test line from Naveen loves keerthi
+    }
+
     public void Nike_Keerthi_from_keerthi()
     { 
         // This method is intentionally left blank to demonstrate a change for testing purposes.
