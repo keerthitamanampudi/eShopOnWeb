@@ -6,5 +6,6 @@ namespace BlazorShared.Models;
 [Endpoint(Name = "catalog-brands")]
 public class CatalogBrand : LookupData
 {
+   Hi Keerthi
    Hi Naveen
 }
