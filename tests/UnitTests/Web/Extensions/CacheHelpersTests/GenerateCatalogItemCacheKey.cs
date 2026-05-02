@@ -15,6 +15,18 @@ public class GenerateCatalogItemCacheKey
 
         var result = CacheHelpers.GenerateCatalogItemCacheKey(pageIndex, Constants.ITEMS_PER_PAGE, brandId, typeId);
 
-        Assert.Equal("items-0-10--", result);
+        Assert.Equal("items-0-10---", result);
+    }
+
+    [Fact]
+    public void IncludesSearchTermInCatalogItemCacheKey()
+    {
+        var pageIndex = 0;
+        int? brandId = null;
+        int? typeId = null;
+
+        var result = CacheHelpers.GenerateCatalogItemCacheKey(pageIndex, Constants.ITEMS_PER_PAGE, brandId, typeId, "  Blue  ");
+
+        Assert.Equal("items-0-10---blue", result);
     }
 }
