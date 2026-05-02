@@ -17,7 +17,21 @@ public class CatalogFilterSpecification
     [InlineData(2, 3, 0)]
     public void MatchesExpectedNumberOfItems(int? brandId, int? typeId, int expectedCount)
     {
-        var spec = new eShopWeb.ApplicationCore.Specifications.CatalogFilterSpecification(brandId, typeId);
+        var spec = new eShopWeb.ApplicationCore.Specifications.CatalogFilterSpecification(brandId, typeId, null);
+
+        var result = spec.Evaluate(GetTestItemCollection()).ToList();
+
+        Assert.Equal(expectedCount, result.Count());
+    }
+
+    [Theory]
+    [InlineData("blue", 2)]
+    [InlineData("cotton", 1)]
+    [InlineData("  BLUE  ", 2)]
+    [InlineData("missing", 0)]
+    public void MatchesExpectedNumberOfItemsBySearchTerm(string searchTerm, int expectedCount)
+    {
+        var spec = new eShopWeb.ApplicationCore.Specifications.CatalogFilterSpecification(null, null, searchTerm);
 
         var result = spec.Evaluate(GetTestItemCollection()).ToList();
 
@@ -28,11 +42,11 @@ public class CatalogFilterSpecification
     {
         return new List<CatalogItem>()
             {
-                new CatalogItem(1, 1, "Description", "Name", 0, "FakePath"),
-                new CatalogItem(2, 1, "Description", "Name", 0, "FakePath"),
-                new CatalogItem(3, 1, "Description", "Name", 0, "FakePath"),
-                new CatalogItem(1, 2, "Description", "Name", 0, "FakePath"),
-                new CatalogItem(2, 2, "Description", "Name", 0, "FakePath"),
+                new CatalogItem(1, 1, "Cotton shirt", "Blue shirt", 0, "FakePath"),
+                new CatalogItem(2, 1, "Description", "Blue jeans", 0, "FakePath"),
+                new CatalogItem(3, 1, "Description", "Red hat", 0, "FakePath"),
+                new CatalogItem(1, 2, "Description", "Green shoes", 0, "FakePath"),
+                new CatalogItem(2, 2, "Description", "White socks", 0, "FakePath"),
             };
     }
 }

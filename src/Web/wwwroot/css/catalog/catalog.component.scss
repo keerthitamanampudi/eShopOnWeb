@@ -19,7 +19,7 @@
 
     &-filters {
         background-color: $color-brand;
-        height: $filter-height;
+        min-height: $filter-height;
     }
 
     $filter-padding: .5rem;
@@ -41,6 +41,21 @@
 
         option {
             background-color: $color-brand;
+        }
+    }
+
+    &-search {
+        cursor: text;
+        min-width: 220px;
+
+        &::placeholder {
+            color: rgba($color-foreground-brighter, .65);
+        }
+    }
+
+    &-search-label {
+        &::after {
+            background-image: none;
         }
     }
 
