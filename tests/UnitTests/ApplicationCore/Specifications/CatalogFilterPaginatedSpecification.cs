@@ -8,7 +8,7 @@ public class CatalogFilterPaginatedSpecification
     [Fact]
     public void ReturnsAllCatalogItems()
     {
-        var spec = new eShopWeb.ApplicationCore.Specifications.CatalogFilterPaginatedSpecification(0, 10, null, null);
+        var spec = new eShopWeb.ApplicationCore.Specifications.CatalogFilterPaginatedSpecification(0, 10, null, null, null);
 
         var result = spec.Evaluate(GetTestCollection());
 
@@ -19,12 +19,22 @@ public class CatalogFilterPaginatedSpecification
     [Fact]
     public void Returns2CatalogItemsWithSameBrandAndTypeId()
     {
-        var spec = new eShopWeb.ApplicationCore.Specifications.CatalogFilterPaginatedSpecification(0, 10, 1, 1);
+        var spec = new eShopWeb.ApplicationCore.Specifications.CatalogFilterPaginatedSpecification(0, 10, 1, 1, null);
 
         var result = spec.Evaluate(GetTestCollection()).ToList();
 
         Assert.NotNull(result);
         Assert.Equal(2, result.ToList().Count);
+    }
+
+    [Fact]
+    public void ReturnsCatalogItemsMatchingSearchTerm()
+    {
+        var spec = new eShopWeb.ApplicationCore.Specifications.CatalogFilterPaginatedSpecification(0, 10, null, null, "1.5");
+
+        var result = spec.Evaluate(GetTestCollection()).ToList();
+
+        Assert.Single(result);
     }
 
     private List<CatalogItem> GetTestCollection()

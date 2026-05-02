@@ -10,7 +10,7 @@
 
 .esh-catalog-filters {
   background-color: #00A69C;
-  height: 65px; }
+  min-height: 65px; }
 
 .esh-catalog-filter {
   -webkit-appearance: none;
@@ -28,6 +28,15 @@
   padding-top: 1.5rem; }
   .esh-catalog-filter option {
     background-color: #00A69C; }
+
+.esh-catalog-search {
+  cursor: text;
+  min-width: 220px; }
+  .esh-catalog-search::placeholder {
+    color: rgba(255, 255, 255, 0.65); }
+
+.esh-catalog-search-label::after {
+  background-image: none; }
 
 .esh-catalog-label {
   display: inline-block;

@@ -36,10 +36,10 @@ public class CatalogItemsSpecification
     {
         var catalogItems = new List<CatalogItem>();
 
-        var mockCatalogItem1 = Substitute.For<CatalogItem>(1, 1, "Item 1 description", "Item 1", 1.5m, "Item1Uri");
+        var mockCatalogItem1 = Substitute.For<CatalogItem>(1, 1, "Item 1 description", "Item 1", 1.5m, "Item1Uri", 0);
         mockCatalogItem1.Id.Returns(1);
 
-        var mockCatalogItem3 = Substitute.For<CatalogItem>(3, 3, "Item 3 description", "Item 3", 3.5m, "Item3Uri");
+        var mockCatalogItem3 = Substitute.For<CatalogItem>(3, 3, "Item 3 description", "Item 3", 3.5m, "Item3Uri", 0);
         mockCatalogItem3.Id.Returns(3);
 
         catalogItems.Add(mockCatalogItem1);
