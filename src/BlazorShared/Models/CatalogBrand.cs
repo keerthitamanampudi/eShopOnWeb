@@ -7,4 +7,17 @@ namespace BlazorShared.Models;
  
 public class CatalogBrand : LookupData
 {
+        public CatalogBrand()
+        {
+        }
+    
+        public CatalogBrand(string name)
+        {
+            Name = name;
+        }
+    
+        public override string ToString()
+        {
+            return Name;
+    }
 }
