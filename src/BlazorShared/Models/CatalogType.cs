@@ -5,4 +5,8 @@ namespace BlazorShared.Models;
 [Endpoint(Name = "catalog-types")]
 public class CatalogType : LookupData
 {
+    static CatalogType()
+    {
+  
+    }
 }
